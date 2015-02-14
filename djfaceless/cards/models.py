@@ -49,7 +49,8 @@ class Card(models.Model):
     race = models.CharField(_('race'), max_length=255,
         null=True, blank=True)
 
-    collectible = models.BooleanField(_('collectible'), default=True)
+    collectible = models.BooleanField(_('collectible'), default=False)
+
 
     faction = models.CharField(_('faction'), max_length=255,
         null=True, blank=True)
@@ -59,7 +60,7 @@ class Card(models.Model):
         null=True, blank=True)
     artist = models.CharField(_('artist'), max_length=255,
         null=True, blank=True)
-    elite = models.BooleanField(_('elite'), default=True)
+    elite = models.BooleanField(_('elite'), default=False)
 
     howToGet = models.CharField(_('how to get'), max_length=255,
         null=True, blank=True)
