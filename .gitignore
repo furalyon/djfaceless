@@ -252,3 +252,6 @@ db.sqlite3
 djfaceless/media/
 
 db.json
+
+#Windows cmds
+*.cmd

@@ -1,7 +1,7 @@
 from environment_settings import *
 from django.utils.translation import ugettext_lazy as _
 
-INSTALLED_APPS = (
+DJANGO_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -9,6 +9,15 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 )
+
+THIRD_PARTY_APPS = (
+)
+
+PROJECT_APPS = tuple('djfaceless.'+app for app in (
+    'cards',
+))
+
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -42,4 +51,4 @@ STATICFILES_DIRS = (
     location('project-static'),
 )
 
-FIELD_PLACEHOLDER = _('Field populated by system when saving')
+FIELD_PLACEHOLDER = _('field-populated-by-system-when-saving')
