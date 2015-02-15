@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.template.defaultfilters import slugify
 
+from .managers import CardManager
 
 ###################### ENTITIES ########################
 # Whenever a new value for one of the entity fields(type, rarity, faction, race) is 
@@ -31,13 +32,13 @@ class Mechanic(AbstractEntity):
 
 class Card(models.Model):
     id = models.CharField(_('id'), max_length=255, primary_key=True)
-    name = models.CharField(_('name'), max_length=255, unique=True)
-    cost = models.IntegerField(_('cost'))
+    name = models.CharField(_('name'), max_length=255)
     type = models.CharField(_('type'), max_length=255)
     rarity = models.CharField(_('rarity'), max_length=255)
     playerClass = models.CharField(_('playerClass'), max_length=255,
         null=True, blank=True)
 
+    cost = models.IntegerField(_('cost'), null=True, blank=True)
     attack = models.IntegerField(_('attack'), null=True, blank=True)
     health = models.IntegerField(_('health'), null=True, blank=True)
     durability = models.IntegerField(_('durability'), null=True, blank=True)
@@ -62,10 +63,16 @@ class Card(models.Model):
         null=True, blank=True)
     elite = models.BooleanField(_('elite'), default=False)
 
+    set = models.CharField(_('set'), max_length=255)
     howToGet = models.CharField(_('how to get'), max_length=255,
         null=True, blank=True)
     howToGetGold = models.CharField(_('how to get golden version'), max_length=255,
         null=True, blank=True)
 
+    objects = CardManager()
+
     def __unicode__(self):
         return self.name
+
+    class Meta:
+        unique_together = ('id','name')

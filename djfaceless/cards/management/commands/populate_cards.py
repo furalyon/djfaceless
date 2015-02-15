@@ -8,21 +8,22 @@ def populate(filename='djfaceless/fixtures/AllSets.json'):
     inventory = json.loads(data)
     for card_set, cards in dict.items(inventory):
         for card in cards:
-            try:
-                card['collectible']
-                card['cost']
-            except KeyError:
-                pass
-            else:
-                mechanics = card.get('mechanics',[])
-                if mechanics:
-                    del(card['mechanics'])
-                card_obj = Card.objects.create(
-                    **card
-                )
-                for mechanic in mechanics:
-                    mechanic_obj, _ = Mechanic.objects.get_or_create(name=mechanic)
-                    card_obj.mechanics.add(mechanic_obj)
+            card_type = card.get('type','')
+            if card_type in ('Minion', 'Spell', 'Weapon'):
+                try:
+                    mechanics = card.get('mechanics',[])
+                    if mechanics:
+                        del(card['mechanics'])
+                    card_obj = Card.objects.create(
+                        set = card_set,
+                        **card
+                    )
+                    for mechanic in mechanics:
+                        mechanic_obj, _ = Mechanic.objects.get_or_create(name=mechanic)
+                        card_obj.mechanics.add(mechanic_obj)
+                except Except,e:
+                    print card
+                    print '\n%s'%e
 
 class Command(BaseCommand):
     args = ''
