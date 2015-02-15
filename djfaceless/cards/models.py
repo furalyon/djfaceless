@@ -28,24 +28,38 @@ class Mechanic(AbstractEntity):
     pass
 
 class Type(AbstractEntity):
-    pass
+
+    def cards(self):
+        return Card.objects.filter(type=self.name)
 
 class Rarity(AbstractEntity):
     class Meta:
         verbose_name_plural=_('rarities')
 
+    def cards(self):
+        return Card.objects.filter(rarity=self.name)
+
 class PlayerClass(AbstractEntity):
     class Meta:
         verbose_name_plural=_('classes')
 
+    def cards(self):
+        return Card.objects.filter(playerClass=self.name)
+
 class Race(AbstractEntity):
-    pass
+
+    def cards(self):
+        return Card.objects.filter(race=self.name)
 
 class Faction(AbstractEntity):
-    pass
+
+    def cards(self):
+        return Card.objects.filter(faction=self.name)
 
 class Set(AbstractEntity):
-    pass
+
+    def cards(self):
+        return Card.objects.filter(set=self.name)
 
 ######################### CARD ########################
 
