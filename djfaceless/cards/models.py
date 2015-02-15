@@ -24,19 +24,39 @@ class AbstractEntity(models.Model):
         self.slug = slugify(self.name)
         super(AbstractEntity, self).save(*args, **kwargs)
 
-
 class Mechanic(AbstractEntity):
+    pass
+
+class Type(AbstractEntity):
+    pass
+
+class Rarity(AbstractEntity):
+    class Meta:
+        verbose_name_plural=_('rarities')
+
+class PlayerClass(AbstractEntity):
+    class Meta:
+        verbose_name_plural=_('classes')
+
+class Race(AbstractEntity):
+    pass
+
+class Faction(AbstractEntity):
+    pass
+
+class Set(AbstractEntity):
     pass
 
 ######################### CARD ########################
 
 class Card(models.Model):
-    id = models.CharField(_('id'), max_length=255, primary_key=True)
+    game_id = models.CharField(_('game id'), max_length=255, unique=True)
     name = models.CharField(_('name'), max_length=255)
     type = models.CharField(_('type'), max_length=255)
     rarity = models.CharField(_('rarity'), max_length=255)
     playerClass = models.CharField(_('playerClass'), max_length=255,
         null=True, blank=True)
+    NEUTRAL, TOKEN = 'Neutral', 'Token'
 
     cost = models.IntegerField(_('cost'), null=True, blank=True)
     attack = models.IntegerField(_('attack'), null=True, blank=True)
@@ -51,7 +71,6 @@ class Card(models.Model):
         null=True, blank=True)
 
     collectible = models.BooleanField(_('collectible'), default=False)
-
 
     faction = models.CharField(_('faction'), max_length=255,
         null=True, blank=True)
@@ -75,4 +94,15 @@ class Card(models.Model):
         return self.name
 
     class Meta:
-        unique_together = ('id','name')
+        unique_together = ('game_id','name')
+
+    def save(self, *args, **kwargs):
+        super(Card, self).save(*args, **kwargs)
+        Type.objects.get_or_create(name=self.type)
+        Rarity.objects.get_or_create(name=self.rarity)
+        PlayerClass.objects.get_or_create(name=self.playerClass)
+        if self.race:
+            Race.objects.get_or_create(name=self.race)
+        if self.faction:
+            Faction.objects.get_or_create(name=self.faction)
+        Set.objects.get_or_create(name=self.set)
