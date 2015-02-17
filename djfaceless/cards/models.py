@@ -33,6 +33,7 @@ class Type(AbstractEntity):
         return Card.objects.filter(type=self.name)
 
 class Rarity(AbstractEntity):
+    TOKEN = 'Token'
     class Meta:
         verbose_name_plural=_('rarities')
 
@@ -40,6 +41,7 @@ class Rarity(AbstractEntity):
         return Card.objects.filter(rarity=self.name)
 
 class PlayerClass(AbstractEntity):
+    NEUTRAL = 'Neutral'
     class Meta:
         verbose_name_plural=_('classes')
 
@@ -66,11 +68,10 @@ class Set(AbstractEntity):
 class Card(models.Model):
     game_id = models.CharField(_('game id'), max_length=255, unique=True)
     name = models.CharField(_('name'), max_length=255)
-    type = models.CharField(_('type'), max_length=255)
-    rarity = models.CharField(_('rarity'), max_length=255)
-    playerClass = models.CharField(_('playerClass'), max_length=255,
+    type = models.ForeignKey(Type, verbose_name=_('type'))
+    rarity = models.ForeignKey(Rarity, verbose_name=_('rarity'))
+    playerClass = models.ForeignKey(PlayerClass, verbose_name=_('playerClass'),
         null=True, blank=True)
-    NEUTRAL, TOKEN = 'Neutral', 'Token'
 
     cost = models.IntegerField(_('cost'), null=True, blank=True)
     attack = models.IntegerField(_('attack'), null=True, blank=True)
@@ -81,12 +82,12 @@ class Card(models.Model):
         null=True)
     text = models.CharField(_('text'), max_length=255,
         null=True, blank=True)
-    race = models.CharField(_('race'), max_length=255,
+    race = models.ForeignKey(Race, verbose_name=_('race'),
         null=True, blank=True)
 
     collectible = models.BooleanField(_('collectible'), default=False)
 
-    faction = models.CharField(_('faction'), max_length=255,
+    faction = models.ForeignKey(Faction, verbose_name=_('faction'),
         null=True, blank=True)
     inPlayText = models.CharField(_('inPlayText'), max_length=255,
         null=True, blank=True)
@@ -96,7 +97,7 @@ class Card(models.Model):
         null=True, blank=True)
     elite = models.BooleanField(_('elite'), default=False)
 
-    set = models.CharField(_('set'), max_length=255)
+    set = models.ForeignKey(Set, verbose_name=_('set'))
     howToGet = models.CharField(_('how to get'), max_length=255,
         null=True, blank=True)
     howToGetGold = models.CharField(_('how to get golden version'), max_length=255,
@@ -109,14 +110,3 @@ class Card(models.Model):
 
     class Meta:
         unique_together = ('game_id','name')
-
-    def save(self, *args, **kwargs):
-        super(Card, self).save(*args, **kwargs)
-        Type.objects.get_or_create(name=self.type)
-        Rarity.objects.get_or_create(name=self.rarity)
-        PlayerClass.objects.get_or_create(name=self.playerClass)
-        if self.race:
-            Race.objects.get_or_create(name=self.race)
-        if self.faction:
-            Faction.objects.get_or_create(name=self.faction)
-        Set.objects.get_or_create(name=self.set)

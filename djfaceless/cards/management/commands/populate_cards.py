@@ -3,10 +3,14 @@ import json
 from django.core.management.base import BaseCommand, CommandError
 
 from djfaceless.cards.models import Card, Mechanic
+from djfaceless.cards.factory import CardFactory
+
+def file_as_string(filename):
+    with open (filename, "r") as myfile:
+        return myfile.read().replace('\n', '')
 
 def populate(filename='djfaceless/fixtures/AllSets.json'):
-    with open (filename, "r") as myfile:
-        data=myfile.read().replace('\n', '').replace('  ','')
+    data = file_as_string(filename)
     inventory = json.loads(data)
     for card_set, cards in dict.items(inventory):
         if card_set != 'Debug':
@@ -14,30 +18,10 @@ def populate(filename='djfaceless/fixtures/AllSets.json'):
                 card_type = card.get('type','')
                 if card_type in ('Minion', 'Spell', 'Weapon'):
                     try:
-                        card['playerClass'] = card.get('playerClass', Card.NEUTRAL)
-                        card['rarity'] = card.get('rarity', Card.TOKEN)
-                        card['game_id'] = card['id']
-                        del(card['id'])
-
-                        mechanics = card.get('mechanics',[])
-                        try:
-                            del(card['mechanics'])
-                        except KeyError:
-                            pass
-
-                        card_obj = Card.objects.create(
-                            set = card_set,
-                            **card
-                        )
-
-                        for mechanic in mechanics:
-                            mechanic_obj, _ = Mechanic.objects.get_or_create(
-                                name=mechanic
-                            )
-                            card_obj.mechanics.add(mechanic_obj)
-                    except Exception,e:
+                        card_factory = CardFactory(set=card_set,**card)
+                        card_factory.create()
+                    except:
                         print card
-                        # print '\n%s'%e
                         raise
 
 class Command(BaseCommand):
