@@ -40,14 +40,6 @@ class Rarity(AbstractEntity):
     def cards(self):
         return Card.objects.filter(rarity=self.name)
 
-class PlayerClass(AbstractEntity):
-    NEUTRAL = 'Neutral'
-    class Meta:
-        verbose_name_plural=_('classes')
-
-    def cards(self):
-        return Card.objects.filter(playerClass=self.name)
-
 class Race(AbstractEntity):
 
     def cards(self):
@@ -70,8 +62,24 @@ class Card(models.Model):
     name = models.CharField(_('name'), max_length=255)
     type = models.ForeignKey(Type, verbose_name=_('type'))
     rarity = models.ForeignKey(Rarity, verbose_name=_('rarity'))
-    playerClass = models.ForeignKey(PlayerClass, verbose_name=_('playerClass'),
-        null=True, blank=True)
+
+    DRUID, HUNTER, MAGE, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR = (
+        'Druid','Hunter','Mage','Paladin',
+        'Priest','Rogue','Shaman','Warlock','Warrior'
+    )
+    PLAYER_CLASS_CHOICES = (
+        (DRUID, _(DRUID)),
+        (HUNTER,_(HUNTER)),
+        (MAGE,_(MAGE)),
+        (PALADIN,_(PALADIN)),
+        (PRIEST,_(PRIEST)),
+        (ROGUE,_(ROGUE)),
+        (SHAMAN,_(SHAMAN)),
+        (WARLOCK,_(WARLOCK)),
+        (WARRIOR,_(WARRIOR)),
+    )
+    playerClass = models.CharField(_('Class'), max_length=255,
+        choices=PLAYER_CLASS_CHOICES, null=True, blank=True)
 
     cost = models.IntegerField(_('cost'), null=True, blank=True)
     attack = models.IntegerField(_('attack'), null=True, blank=True)
@@ -89,7 +97,7 @@ class Card(models.Model):
 
     faction = models.ForeignKey(Faction, verbose_name=_('faction'),
         null=True, blank=True)
-    inPlayText = models.CharField(_('inPlayText'), max_length=255,
+    inPlayText = models.CharField(_('in Play Text'), max_length=255,
         null=True, blank=True)
     flavor = models.CharField(_('flavor'), max_length=255,
         null=True, blank=True)
@@ -110,3 +118,4 @@ class Card(models.Model):
 
     class Meta:
         unique_together = ('game_id','name')
+        ordering = ('playerClass','name')

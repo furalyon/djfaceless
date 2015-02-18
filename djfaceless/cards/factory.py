@@ -20,7 +20,7 @@ class CardFactory(object):
     def create(self):
         self.get_or_create_entities()
         manipulated_fields = (
-            'id','type','rarity','playerClass','set','race','faction','mechanics'
+            'id','type','rarity','set','race','faction','mechanics'
         )
         unmanipulated_fields_dict = {
             key:value for key,value in self.card_dict.items() \
@@ -31,7 +31,6 @@ class CardFactory(object):
             game_id = self.card_dict['id'],
             type = self.type,
             rarity = self.rarity,
-            playerClass = self.playerClass,
             set = self.set,
             race = self.race,
             faction = self.faction,
@@ -52,9 +51,6 @@ class CardFactory(object):
         )
         self.rarity, _ = models.Rarity.objects.get_or_create(
             name = self.card_dict.get('rarity', models.Rarity.TOKEN)
-        )
-        self.playerClass, _ = models.PlayerClass.objects.get_or_create(
-            name = self.card_dict.get('playerClass', models.PlayerClass.NEUTRAL)
         )
         self.set, _ = models.Set.objects.get_or_create(
             name = self.card_dict['set']
