@@ -111,6 +111,7 @@ class Card(models.Model):
     howToGetGold = models.CharField(_('how to get golden version'), max_length=255,
         null=True, blank=True)
 
+    search_text = models.TextField(_('Search Text'), blank=True)
     objects = CardManager()
 
     def __unicode__(self):
@@ -119,3 +120,15 @@ class Card(models.Model):
     class Meta:
         unique_together = ('game_id','name')
         ordering = ('playerClass','name')
+
+    def save(self, *args, **kwargs):
+        self.search_text = "%s %s %s %s %s %s %s"%(
+            self.name,
+            self.type,
+            self.rarity,
+            self.get_playerClass_display(),
+            self.race,
+            self.faction,
+            self.text,
+            )
+        super(Card, self).save(*args, **kwargs)
