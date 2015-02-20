@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+    {% include "cards/card-filter-form.html" %}
     <ul class="card-list">
     {% for card in card_list %}
         <li class="card card--li">

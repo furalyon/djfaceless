@@ -1,0 +1,29 @@
+<form action="" method='GET'>
+    <ul class="form-fields">
+        <li>
+            <label for="id_playerClass">Class</label>
+            <select name="playerClass" id="id_playerClass">
+                <option value="">All</option>
+                {% for k,v in playerClasses %}
+                <option value="{{k}}">{{ v }}</option>
+                {% endfor %}
+            </select>
+        </li>
+        <li>
+            <label for="id_cost">Cost</label>
+            <select name="cost" id="id_cost">
+                <option value="">All</option>
+                {% for k,v in card_cost_filter_options.items %}
+                <option value="{{k}}">{{ v }}</option>
+                {% endfor %}
+            </select>
+        </li>
+        <li>
+            <label for="id_search_text">Search</label>
+            <input class='text-input' type='text' name="search_text" id="id_search_text" placeholer-text='use space to separate multiple search strings'>
+        </li>
+        <li>
+            <input type="submit" class='btn--submit'>
+        </li>
+    </ul>
+</form>
