@@ -1,4 +1,4 @@
-Faceless - Hearthsone
+djFaceless
 ========================
 
-A responsive responsible application to browse Hearthstone cards and make decks. Just starting out
+A demonstration on using a json file that is not a db dump to recreate hearthstone card sets in django. Check the management command and factory.py in the cards app to understand how it works.
